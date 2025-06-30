@@ -21,6 +21,7 @@ if (!fs.existsSync(uploadFolder)) {
   fs.mkdirSync(uploadFolder);
 }
 
+
 // ✅ Read allowed origins from .env
 const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(",") || [];
 
