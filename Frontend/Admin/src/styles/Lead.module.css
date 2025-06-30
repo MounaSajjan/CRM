@@ -1,0 +1,176 @@
+/* src/styles/Lead.module.css */
+
+.leadTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  background-color: white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  font-size: 0.95rem;
+}
+
+.leadTable th,
+.leadTable td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.leadTable th {
+  background-color: #f8f8f8;
+  font-weight: 600;
+  color: #333;
+}
+
+.leadTable tbody tr:hover {
+  background-color: #f3f3f3;
+}
+
+.addLeadButton {
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  font-size: 0.9rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s ease-in-out;
+}
+
+.addLeadButton:hover {
+  background-color: #2563eb;
+}
+
+/* Modal Overlay */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(20, 20, 20, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+/* Modal Form */
+.modalForm {
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  width: 360px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.modalForm h3 {
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+  color: #333;
+}
+
+/* Dropzone */
+.dropzone {
+  border: 2px dashed #94a3b8;
+  padding: 1rem;
+  border-radius: 8px;
+  text-align: center;
+  cursor: pointer;
+  margin-bottom: 1rem;
+  background-color: #f9fafb;
+}
+
+.browseButton {
+  display: inline-block;
+  margin-top: 0.5rem;
+  color: #3b82f6;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+/* Modal Actions */
+.formActions {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.formActions button {
+  flex: 1;
+  padding: 0.5rem 0.8rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.formActions button[type="submit"] {
+  background-color: #10b981;
+  color: white;
+}
+
+.formActions button[type="submit"]:hover {
+  background-color: #059669;
+}
+
+.formActions button[type="button"] {
+  background-color: #f87171;
+  color: white;
+}
+
+.formActions button[type="button"]:hover {
+  background-color: #ef4444;
+}
+
+/* Progress bar */
+progress {
+  width: 100%;
+  height: 10px;
+  margin-top: 0.5rem;
+}
+
+/* Circular Upload Progress */
+.circularWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.circularProgress {
+  width: 80px;
+  height: 80px;
+  transform: rotate(-90deg);
+}
+
+.circularProgress .bg {
+  fill: none;
+  stroke: #e5e7eb;
+  stroke-width: 4;
+}
+
+.circularProgress .progress {
+  fill: none;
+  stroke: #3b82f6;
+  stroke-width: 4;
+  stroke-linecap: round;
+  transition: stroke-dasharray 0.3s ease-in-out;
+}
+
+.circularProgress .percentage {
+  fill: #111827;
+  font-size: 0.45rem;
+  font-weight: bold;
+  text-anchor: middle;
+  dominant-baseline: middle;
+}
+
+/* Loading text */
+.loadingText {
+  text-align: center;
+  font-size: 1rem;
+  margin-top: 2rem;
+  color: #555;
+}

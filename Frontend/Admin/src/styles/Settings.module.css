@@ -1,0 +1,88 @@
+/* Outer container - centers box */
+.container {
+  max-width: 1100px;
+  margin: 10px auto; /* same top, right, bottom, left margin */
+  padding: 10px;
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+/* Title */
+.title {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #222;
+}
+
+/* Divider line */
+.divider {
+  border: none;
+  height: 1px;
+  background: #ddd;
+  margin-bottom: 30px;
+  width: 100%;
+}
+
+/* Form layout */
+.form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 5px;
+}
+
+/* Field block */
+.field {
+  display: flex;
+  flex-direction: column;
+}
+
+.field label {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 6px;
+  color: #444;
+}
+
+/* Input box - compact & clean */
+.field input {
+  height: 34px;
+  padding: 6px 10px;
+  font-size: 14px;
+  width: 100%;
+  max-width: 320px;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  transition: border 0.2s ease;
+}
+
+.field input:focus {
+  outline: none;
+  border-color: #4a90e2;
+  box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.1);
+}
+
+/* Save button */
+/* Save button */
+.saveBtn {
+  background-color: #535456;
+  color: white;
+  border: none;
+  padding: 10px 50px;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 15px;
+  cursor: pointer;
+  transition: background 0.3s;
+  margin-top: 20px;
+  align-self: flex-end; /* ✅ aligns it to the right */
+}
+
+.saveBtn:hover {
+  background-color: #545557;
+}
