@@ -1,16 +1,15 @@
-// src/pages/Lead.jsx
 import React, { useEffect, useState } from 'react';
 import MainLayout from '../components/Layout';
-import Pagination from '../components/Pagination';
 import styles from '../styles/Lead.module.css';
+import Pagination from '../components/Pagination';
 import API from '../utils/axios';
 import Papa from 'papaparse';
 
 const Lead = () => {
   const [leads, setLeads] = useState([]);
-  const [file, setFile] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
+  const [file, setFile] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [modalType, setModalType] = useState(null); // 'upload' | 'manual'
   const [loading, setLoading] = useState(false);
@@ -50,19 +49,19 @@ const Lead = () => {
       complete: (results) => {
         const required = ["name", "email", "phone", "language", "location"];
         const invalidRows = results.data.filter(row =>
-          required.some(field => !row[field]?.trim())
+          required.some(field => !row[field] || row[field].trim() === "")
         );
         callback(invalidRows.length === 0, invalidRows.length);
       }
     });
   };
 
-  const handleFileUpload = () => {
+  const handleFileUpload = async () => {
     if (!file) return;
 
     verifyCSV(file, async (isValid, count) => {
       if (!isValid) {
-        alert(`${count} invalid rows found. Please fix the file and try again.`);
+        alert(`${count} invalid rows found. Fix the file and try again.`);
         return;
       }
 
@@ -71,15 +70,18 @@ const Lead = () => {
 
       try {
         setUploading(true);
-        const res = await API.post('/api/leads/upload', formData, {
+        const response = await API.post('/api/leads/upload', formData, {
           headers: { 'Content-Type': 'multipart/form-data' },
           onUploadProgress: (e) => {
             setUploadProgress(Math.round((e.loaded * 100) / e.total));
           },
         });
 
-        alert(res.data.message || 'File uploaded successfully');
-        resetUploadModal();
+        alert(response.data.message || 'File uploaded successfully');
+        setUploading(false);
+        setUploadProgress(0);
+        setFile(null);
+        setModalType(null);
         fetchLeads();
       } catch (err) {
         console.error('Upload error:', err);
@@ -89,70 +91,13 @@ const Lead = () => {
     });
   };
 
-  const resetUploadModal = () => {
-    setUploading(false);
-    setUploadProgress(0);
-    setFile(null);
-    setModalType(null);
-  };
-
   const handleSort = (key) => {
-    const direction = (sortConfig.key === key && sortConfig.direction === 'asc') ? 'desc' : 'asc';
+    let direction = 'asc';
+    if (sortConfig.key === key && sortConfig.direction === 'asc') {
+      direction = 'desc';
+    }
     setSortConfig({ key, direction });
   };
-
-  const renderUploadModal = () => (
-    <div className={styles.modalOverlay} onClick={resetUploadModal}>
-      <form
-        className={styles.modalForm}
-        onClick={(e) => e.stopPropagation()}
-        onSubmit={(e) => {
-          e.preventDefault();
-          handleFileUpload();
-        }}
-      >
-        <h3>Upload Lead CSV</h3>
-
-        <div
-          className={styles.dropzone}
-          onDragOver={(e) => e.preventDefault()}
-          onDrop={(e) => {
-            e.preventDefault();
-            setFile(e.dataTransfer.files[0]);
-          }}
-        >
-          {file ? <p>{file.name}</p> : <p>Drag & drop or click to browse</p>}
-          <input
-            type="file"
-            accept=".csv"
-            hidden
-            id="fileInput"
-            onChange={(e) => setFile(e.target.files[0])}
-          />
-          <label htmlFor="fileInput" className={styles.browseButton}>Browse File</label>
-        </div>
-
-        {uploading && (
-          <div className={styles.circularWrapper}>
-            <svg className={styles.circularProgress} viewBox="0 0 36 36">
-              <path className={styles.bg} d="M18 2.0845a 15.9155 15.9155 0 0 1 0 31.831a 15.9155 15.9155 0 0 1 0 -31.831" />
-              <path
-                className={styles.progress}
-                strokeDasharray={`${uploadProgress}, 100`}
-                d="M18 2.0845a 15.9155 15.9155 0 0 1 0 31.831a 15.9155 15.9155 0 0 1 0 -31.831"
-              />
-              <text x="18" y="20.35" className={styles.percentage}>{uploadProgress}%</text>
-            </svg>
-          </div>
-        )}
-
-        <div className={styles.formActions}>
-          <button type="submit" disabled={uploading || !file}>Upload</button>
-          <button type="button" onClick={resetUploadModal} disabled={uploading}>Cancel</button>
-        </div>
-      </form>
-    </div>
-  );
 
   return (
     <MainLayout
@@ -167,7 +112,57 @@ const Lead = () => {
         </div>
       }
     >
-      {modalType === 'upload' && renderUploadModal()}
+      {modalType === 'upload' && (
+        <div className={styles.modalOverlay} onClick={() => setModalType(null)}>
+          <form
+            className={styles.modalForm}
+            onClick={(e) => e.stopPropagation()}
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleFileUpload();
+            }}
+          >
+            <h3>Upload Lead CSV</h3>
+            <div
+              className={styles.dropzone}
+              onDragOver={(e) => e.preventDefault()}
+              onDrop={(e) => {
+                e.preventDefault();
+                setFile(e.dataTransfer.files[0]);
+              }}
+            >
+              {file ? <p>{file.name}</p> : <p>Drag & drop or click to browse</p>}
+              <input
+                type="file"
+                accept=".csv"
+                hidden
+                id="fileInput"
+                onChange={(e) => setFile(e.target.files[0])}
+              />
+              <label htmlFor="fileInput" className={styles.browseButton}>Browse File</label>
+            </div>
+
+            {uploading && (
+              <div className={styles.circularWrapper}>
+                <svg className={styles.circularProgress} viewBox="0 0 36 36">
+                  <path className={styles.bg} d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                  <path
+                    className={styles.progress}
+                    strokeDasharray={`${uploadProgress}, 100`}
+                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                  />
+                  <text x="18" y="20.35" className={styles.percentage}>{uploadProgress}%</text>
+                </svg>
+              </div>
+            )}
+
+            <div className={styles.formActions}>
+              <button type="submit" disabled={uploading || !file}>Upload</button>
+              <button type="button" onClick={() => { setFile(null); setModalType(null); }} disabled={uploading}>Cancel</button>
+            </div>
+          </form>
+        </div>
+      )}
 
       {loading ? (
         <p className={styles.loadingText}>Loading leads...</p>

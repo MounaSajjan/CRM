@@ -26,7 +26,7 @@ if (!fs.existsSync(uploadFolder)) {
 const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(",") || [];
 
 // ✅ Regex for Vercel preview domains (admin/employee)
-// const vercelRegex = /^https:\/\/(admin|employee)-frontend-[a-z0-9]+-meghnachhanwals-projects\.vercel\.app$/;
+// const vercelRegex = /^https:\/\/(admin|employee)-frontend-[a-z0-9]+-mounaProjects\.vercel\.app$/;
 
 // ✅ Dynamic CORS configuration
 const corsOptions = {

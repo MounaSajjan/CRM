@@ -23,33 +23,11 @@ const Dashboard = () => {
     const fetchEmployees = async () => {
       try {
         const res = await API.get("/api/employees/all");
-
-        console.log("🧪 API full response:", res);
-        console.log("🧪 res.data type:", typeof res.data);
-        console.log("🧪 res.data:", res.data);
-
-        let empList = [];
-
-        if (Array.isArray(res.data)) {
-          empList = res.data;
-        } else if (
-          res.data &&
-          typeof res.data === "object" &&
-          Array.isArray(res.data.employees)
-        ) {
-          empList = res.data.employees;
-        } else {
-          console.warn("⚠️ Unexpected API response format. Defaulting to empty list.");
-        }
-
-        console.log("✅ Final employee array to set:", empList);
-        setEmployees(empList);
+        setEmployees(res.data || []);
       } catch (err) {
-        console.error("❌ Error fetching employees:", err);
-        setEmployees([]); // fallback
+        console.error("Error fetching employees:", err);
       }
     };
-
     fetchEmployees();
   }, []);
 
@@ -106,7 +84,7 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Employee Table */}
+        {/* ✅ Employee Table (Dynamic) */}
         <div className={styles.employeeTableSection}>
           <h3>Employee Data</h3>
           <table className={styles.employeeTable}>
@@ -121,30 +99,28 @@ const Dashboard = () => {
               </tr>
             </thead>
             <tbody>
-              {Array.isArray(employees) && employees.length > 0 ? (
+              {employees.length === 0 ? (
+                <tr>
+                  <td colSpan="6" style={{ textAlign: "center" }}>
+                    No employees found.
+                  </td>
+                </tr>
+              ) : (
                 employees.map((emp) => (
                   <tr key={emp._id}>
                     <td>{emp.firstName} {emp.lastName}</td>
                     <td>{emp.email}</td>
                     <td>{emp.employeeId}</td>
-                    <td
-                      style={{
-                        color: emp.status === "Active" ? "green" : "red",
-                        fontWeight: "bold",
-                      }}
-                    >
+                    <td style={{
+                      color: emp.status === "Active" ? "green" : "red",
+                      fontWeight: "bold",
+                    }}>
                       {emp.status}
                     </td>
                     <td>{emp.assignedLeads || 0}</td>
                     <td>{emp.closedLeads || 0}</td>
                   </tr>
                 ))
-              ) : (
-                <tr>
-                  <td colSpan="6" style={{ textAlign: "center" }}>
-                    No employees found.
-                  </td>
-                </tr>
               )}
             </tbody>
           </table>
