@@ -6,9 +6,9 @@ import styles from "../styles/Settings.module.css";
 
 const Settings = () => {
   const [formData, setFormData] = useState({
-    firstName: "Meghna",
-    lastName: "Chhanwal",
-    email: "mjchhanwal@gmail.com",
+    firstName: "Mouna",
+    lastName: "Sajjan",
+    email: "mounamc268@gmail.com",
     password: "",
     confirmPassword: "",
   });

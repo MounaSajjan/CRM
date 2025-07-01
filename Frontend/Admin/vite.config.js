@@ -1,8 +1,18 @@
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
 
+export default defineConfig(({ mode }) => {
+  const isDev = mode === 'development';
 
-export default defineConfig({
-  plugins: [react()],
-  base: "https://crm-6jg8.onrender.com/"
+  return {
+    plugins: [react()],
+    server: {
+      headers: isDev
+        ? {
+            'Content-Security-Policy':
+              "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; connect-src *",
+          }
+        : {},
+    },
+  };
 });

@@ -1,4 +1,3 @@
-// src/contexts/AuthContext.jsx
 import React, { createContext, useContext, useEffect, useState } from "react";
 
 const AuthContext = createContext();
@@ -8,40 +7,50 @@ export const AuthProvider = ({ children }) => {
   const [employee, setEmployeeState] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // 🔁 Load from sessionStorage
   useEffect(() => {
-    const saved = sessionStorage.getItem("employee");
+    const saved = localStorage.getItem("employee");
     if (saved) {
       setEmployeeState(JSON.parse(saved));
     }
     setLoading(false);
   }, []);
 
-  // ✅ Auto logout on tab close (but not on refresh)
+  // Logout on tab close
   useEffect(() => {
+    let unloaded = false;
     const handleTabClose = () => {
-      const nav = performance.getEntriesByType("navigation")[0];
-      if (nav?.type === "reload") return;
+      if (unloaded) return;
+      unloaded = true;
 
-      const emp = sessionStorage.getItem("employee");
-      if (emp && navigator.sendBeacon) {
-        const parsed = JSON.parse(emp);
-        navigator.sendBeacon(`${API_BASE}/api/auth/logout/${parsed._id}`);
-        sessionStorage.removeItem("employee");
+      const emp = localStorage.getItem("employee");
+      if (!emp) return;
+
+      const { _id } = JSON.parse(emp);
+      const logoutUrl = `${API_BASE}/api/auth/logout/${_id}`;
+
+      try {
+        navigator.sendBeacon(logoutUrl);
+      } catch (err) {
+        fetch(logoutUrl, {
+          method: "POST",
+          keepalive: true,
+        });
       }
+
+      localStorage.removeItem("employee");
     };
 
-    window.addEventListener("pagehide", handleTabClose);
-    return () => window.removeEventListener("pagehide", handleTabClose);
+    window.addEventListener("beforeunload", handleTabClose);
+    return () => window.removeEventListener("beforeunload", handleTabClose);
   }, []);
 
   const login = (emp) => {
-    sessionStorage.setItem("employee", JSON.stringify(emp));
+    localStorage.setItem("employee", JSON.stringify(emp));
     setEmployeeState(emp);
   };
 
   const logout = () => {
-    sessionStorage.removeItem("employee");
+    localStorage.removeItem("employee");
     setEmployeeState(null);
   };
 
